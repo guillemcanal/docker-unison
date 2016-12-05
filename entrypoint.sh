@@ -24,6 +24,8 @@ addgroup -g $UNISON_GID $UNISON_GROUP
 adduser -u $UNISON_UID -D -G $UNISON_GROUP $UNISON_USER
 
 # TODO: Verify that $UNISON_DIR is a docker volume
-chown $UNISON_USER:$UNISON_GROUP -R $UNISON_DIR
+if [ ! -d /home/$UNISON_USER/.unison ];then
+	chown $UNISON_USER:$UNISON_GROUP -R $UNISON_DIR $UNISON_SOURCE
+fi
 
-su-exec $UNISON_USER:$UNISON_GROUP unison $UNISON_SOURCE $UNISON_DIR -ignorearchives -auto -batch -repeat $UNISON_REPEAT
+exec su-exec $UNISON_USER:$UNISON_GROUP unison $UNISON_SOURCE $UNISON_DIR -auto -batch -repeat $UNISON_REPEAT -ignore 'Path .git'
